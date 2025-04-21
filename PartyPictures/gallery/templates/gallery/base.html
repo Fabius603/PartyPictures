@@ -1,0 +1,31 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}PartyPictures{% endblock %}</title>
+
+    <!-- Standard CSS (optional base.css, z. B. für Schriftarten etc.) -->
+    <link rel="stylesheet" href="{% static 'gallery/css/base.css' %}">
+
+    <!-- Seitenabhängiges CSS -->
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+    <!-- Seiteninhalt -->
+    {% block content %}{% endblock %}
+
+    <!-- Menü-URL für JavaScript global verfügbar machen -->
+    <script>
+        window.menuUrl = "{% url 'menu' %}";
+    </script>
+
+    <!-- Gemeinsames Skript für z. B. Verlaufshandling -->
+    <script src="{% static 'gallery/js/common.js' %}"></script>
+
+    <!-- Weitere Skripte je nach Seite -->
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
