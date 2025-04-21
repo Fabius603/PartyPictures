@@ -26,7 +26,7 @@
     <div id="previewContainer">
         <img id="preview" src="#" alt="Vorschau">
         <div id="actionButtons">
-            <button id="submitBtn" type="submit">Bild hochladen</button>
+            <button id="submitBtn" type="submit" {% if not upload_enabled %}disabled class="disabled"{% endif %}>Bild hochladen</button>
             <button type="button" id="cancelBtn">Abbrechen</button>
         </div>
     </div>

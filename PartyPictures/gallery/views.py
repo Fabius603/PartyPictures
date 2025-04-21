@@ -5,10 +5,12 @@ from .models import UploadedImage, AppConfig
 from .forms import ImageUploadForm
 from django.http import JsonResponse
 import time
+import random
 
 def upload_view(request):
     config = AppConfig.objects.first() or AppConfig(slideshow_speed=10, upload_cooldown=30)
     cooldown = config.upload_cooldown
+    upload_enabled = config.upload_enabled
 
     if request.method == 'POST':
         last_upload = request.session.get("last_upload_ts", 0)
@@ -28,37 +30,47 @@ def upload_view(request):
     return render(request, 'gallery/upload.html', {
         'form': form,
         'cooldown': cooldown,
+        'upload_enabled': upload_enabled,
         'remaining': max(0, cooldown - int(time.time() - request.session.get("last_upload_ts", 0))),
     })
 
 def slideshow_view(request):
-    config = AppConfig.objects.first() or AppConfig(slideshow_speed=10, upload_cooldown=30)
-    cooldown = config.upload_cooldown
-    speed = config.slideshow_speed
-    
-    # Alle freigegebenen Bilder ältestes → neuestes
+    config = AppConfig.objects.first()
+    images = UploadedImage.objects.filter(approved=True)
+
+    if config and config.slideshow_random:
+        images = list(images)
+        random.shuffle(images)
+    else:
+        images = images.order_by('uploaded_at')
+
     return render(request, 'gallery/slideshow.html', {
-        'images': UploadedImage.objects.filter(approved=True).order_by('uploaded_at'),
-        'speed': speed,
-        'cooldown': cooldown,
+        'images': images,
+        'speed': config.slideshow_speed if config else 10,
+        'cooldown': config.upload_cooldown if config else 30,
     })
 
 def slideshow_data(request):
-    qs = UploadedImage.objects.filter(approved=True).order_by('uploaded_at')
-    urls = [request.build_absolute_uri(img.image.url) for img in qs]
-    speed = request.session.get('slideshow_speed', 10)  # Sekunden
-    cooldown = request.session.get('upload_cooldown', 30)  # Sekunden
+    config = AppConfig.objects.first()
+    qs = UploadedImage.objects.filter(approved=True)
 
+    if config and config.slideshow_random:
+        qs = list(qs)
+        random.shuffle(qs)
+    else:
+        qs = qs.order_by('uploaded_at')
+
+    urls = [request.build_absolute_uri(img.image.url) for img in qs]
     return JsonResponse({
         'urls': urls,
-        'speed': speed,
-        'cooldown': cooldown
+        'speed': config.slideshow_speed if config else 10,
+        'cooldown': config.upload_cooldown if config else 30
     })
 
 
 @login_required
 def settings_view(request):
-    config, created = AppConfig.objects.get_or_create(id=1)
+    config, _ = AppConfig.objects.get_or_create(id=1)
 
     if request.method == 'POST':
         if 'disable_all' in request.POST:
@@ -86,10 +98,13 @@ def settings_view(request):
                 messages.error(request, "Bild nicht gefunden.")
             return redirect('settings')
 
-        elif 'speed' in request.POST and 'cooldown' in request.POST:
+        elif request.POST.get('action') == 'save_config':
             try:
-                config.slideshow_speed = int(request.POST['speed'])
-                config.upload_cooldown = int(request.POST['cooldown'])
+                config.slideshow_speed = int(request.POST.get('speed', config.slideshow_speed))
+                config.upload_cooldown = int(request.POST.get('cooldown', config.upload_cooldown))
+                config.camera_cooldown = int(request.POST.get('camera_cooldown', config.camera_cooldown))
+                config.upload_enabled = 'upload_enabled' in request.POST
+                config.slideshow_random = 'slideshow_random' in request.POST
                 config.save()
                 messages.success(request, "Einstellungen gespeichert.")
             except (ValueError, TypeError):
@@ -100,7 +115,11 @@ def settings_view(request):
         'images': UploadedImage.objects.all().order_by('uploaded_at'),
         'speed': config.slideshow_speed,
         'cooldown': config.upload_cooldown,
+        'camera_cooldown': config.camera_cooldown,
+        'upload_enabled': config.upload_enabled,
+        'slideshow_random': config.slideshow_random,
     })
+
 
 def menu_view(request):
     return render(request, 'gallery/menu.html')

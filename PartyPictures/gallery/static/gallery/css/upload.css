@@ -111,6 +111,12 @@ label.upload-button:hover {
     color: white;
 }
 
+button.disabled {
+    background-color: #666 !important;
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+
 #actionButtons button#submitBtn {
     background-color: #007bff;
 }
