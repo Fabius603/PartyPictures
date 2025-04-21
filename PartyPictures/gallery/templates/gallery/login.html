@@ -1,0 +1,28 @@
+{% extends "gallery/base.html" %}
+{% load static %}
+
+{% block title %}Login{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'gallery/css/login.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="login-container">
+    <h1>Login</h1>
+    {% if form.errors %}
+    <p class="error">Benutzername oder Passwort falsch.</p>
+    {% endif %}
+    <form method="post">
+        {% csrf_token %}
+        <label for="id_username">Benutzername</label>
+        {{ form.username }}
+
+        <label for="id_password">Passwort</label>
+        {{ form.password }}
+
+        <button type="submit">Einloggen</button>
+    </form>
+</div>
+{% endblock %}

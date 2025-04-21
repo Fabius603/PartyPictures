@@ -7,3 +7,14 @@ class UploadedImage(models.Model):
 
     def __str__(self):
         return f"Bild {self.id} – hochgeladen am {self.uploaded_at}"
+
+class AppConfig(models.Model):
+    slideshow_speed = models.PositiveIntegerField(default=5)  # Sekunden
+    upload_cooldown = models.PositiveIntegerField(default=10)  # Sekunden
+
+    def __str__(self):
+        return "App-Konfiguration"
+
+    class Meta:
+        verbose_name = "Konfiguration"
+        verbose_name_plural = "Konfigurationen"
