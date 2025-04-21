@@ -1,9 +1,17 @@
 document.addEventListener('DOMContentLoaded', () => {
     const imgEl = document.getElementById('slideshowImage');
-    let urls = JSON.parse(document.getElementById('slideshow-data').textContent);
+
+    let data = {};
+    try {
+        data = JSON.parse(document.getElementById('slideshow-data').textContent);
+    } catch (e) {
+        console.error("Fehler beim Parsen der slideshow-Daten:", e);
+    }
+
+    let urls = data.urls || [];
     let idx = 0;
-    let speed = 10000; // Default = 10s
-    let cooldown = 30000 // Default = 30s
+    let speed = (data.speed || 10) * 1000;
+    let cooldown = (data.cooldown || 30) * 1000;
 
     function showNext() {
         if (!urls.length) return;
@@ -11,34 +19,33 @@ document.addEventListener('DOMContentLoaded', () => {
         imgEl.src = urls[idx];
     }
 
-    // Bildwechsel alle X Sekunden
     let interval = setInterval(showNext, speed);
 
-    // Daten vom Server nachladen (inkl. Geschwindigkeit)
     async function reloadSlideshowData() {
         try {
             const resp = await fetch(window.slideshowDataUrl);
-            const data = await resp.json();
-            if (Array.isArray(data.urls)) {
-                urls = data.urls;
+            const serverData = await resp.json();
+
+            if (Array.isArray(serverData.urls)) {
+                urls = serverData.urls;
                 idx = urls.indexOf(imgEl.src);
                 if (idx < 0) idx = 0;
             }
-            if (!isNaN(data.speed)) {
+
+            if (!isNaN(serverData.speed)) {
                 clearInterval(interval);
-                speed = data.speed * 1000;
+                speed = serverData.speed * 1000;
                 interval = setInterval(showNext, speed);
             }
-            if (!isNaN(data.cooldown)) {
-                clearInterval(interval);
-                cooldown = data.cooldown * 1000;
-                interval = setInterval(showNext, cooldown);
+
+            if (!isNaN(serverData.cooldown)) {
+                cooldown = serverData.cooldown * 1000;
             }
         } catch (e) {
             console.error("Fehler beim Nachladen:", e);
         }
     }
+    reloadSlideshowData();
 
-    // Nachladen
     setInterval(reloadSlideshowData, cooldown);
 });

@@ -22,10 +22,10 @@ def upload_view(request):
     else:
         form = ImageUploadForm()
 
-    return render(request, 'gallery/upload.html', {
-        'form': form,
-        'cooldown': cooldown,
-        'remaining': max(0, cooldown - int(time.time() - request.session.get("last_upload_ts", 0))),
+    return render(request, 'gallery/slideshow.html', {
+        'images': UploadedImage.objects.filter(approved=True).order_by('uploaded_at'),
+        'speed': request.session.get('slideshow_speed', 10),
+        'cooldown': request.session.get('upload_cooldown', 30),
     })
 
 
