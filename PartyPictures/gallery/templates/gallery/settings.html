@@ -1,44 +1,60 @@
 {% load static %}
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Einstellungen</title>
     <link rel="stylesheet" href="{% static 'gallery/css/settings.css' %}">
 </head>
+
 <body>
     <h1>Einstellungen</h1>
 
     {% for msg in messages %}
-        <p>{{ msg }}</p>
+    <p>{{ msg }}</p>
     {% endfor %}
 
     <form method="post">
         {% csrf_token %}
         <label for="speed">Anzeigedauer pro Bild (Sekunden):</label>
         <input type="number" id="speed" name="speed" value="{{ speed }}" min="1">
-    
+
         <label for="cooldown">Upload-Wartezeit (Sekunden):</label>
         <input type="number" id="cooldown" name="cooldown" value="{{ cooldown }}" min="1">
-    
+
         <button type="submit">Speichern</button>
     </form>
 
     <h2>Bilder</h2>
     <form method="post">
         {% csrf_token %}
-        <button name="delete_all" onclick="return confirm('Alle Bilder löschen?');">Alle Bilder löschen</button>
+        <button name="disable_all" onclick="return confirm('Alle Bilder deaktivieren?');">
+            Alle Bilder deaktivieren
+        </button>
     </form>
 
     <div class="gallery-grid">
         {% for img in images %}
-            <div class="gallery-item">
-                <img src="{{ img.image.url }}" style="max-width:100px;">
-                <form method="post">
-                    {% csrf_token %}
-                    <button name="delete_image" value="{{ img.id }}">Löschen</button>
-                </form>
-            </div>
+        <div class="gallery-item">
+            <img src="{{ img.image.url }}">
+            <p>Status: {{ img.approved|yesno:"✅ Aktiviert,⛔️ Deaktiviert" }}</p>
+
+            {% if img.approved %}
+            <form method="post">
+                {% csrf_token %}
+                <button name="disable_image" value="{{ img.id }}" class="btn-red">Deaktivieren</button>
+            </form>
+            {% else %}
+            <form method="post">
+                {% csrf_token %}
+                <button name="enable_image" value="{{ img.id }}" class="btn-blue">Aktivieren</button>
+            </form>
+            {% endif %}
+        </div>
         {% endfor %}
     </div>
+    <script src="{% static 'gallery/js/common.js' %}"></script>
+
 </body>
+
 </html>

@@ -55,14 +55,19 @@ def settings_view(request):
     images = UploadedImage.objects.all().order_by('uploaded_at')
 
     if request.method == 'POST':
-        if 'delete_all' in request.POST:
-            UploadedImage.objects.all().delete()
-            messages.success(request, "Alle Bilder wurden gelöscht.")
+        if 'disable_all' in request.POST:
+            UploadedImage.objects.update(approved=False)
+            messages.success(request, "Alle Bilder wurden deaktiviert.")
             return redirect('settings')
-        elif 'delete_image' in request.POST:
-            image_id = request.POST.get('delete_image')
-            UploadedImage.objects.filter(id=image_id).delete()
-            messages.success(request, "Bild wurde gelöscht.")
+        elif 'disable_image' in request.POST:
+            image_id = request.POST.get('disable_image')
+            UploadedImage.objects.filter(id=image_id).update(approved=False)
+            messages.success(request, "Bild wurde deaktiviert.")
+            return redirect('settings')
+        elif 'enable_image' in request.POST:
+            image_id = request.POST.get('enable_image')
+            UploadedImage.objects.filter(id=image_id).update(approved=True)
+            messages.success(request, "Bild wurde reaktiviert.")
             return redirect('settings')
         elif 'speed' in request.POST and 'cooldown' in request.POST:
             request.session['slideshow_speed'] = int(request.POST['speed'])

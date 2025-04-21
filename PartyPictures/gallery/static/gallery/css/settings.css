@@ -73,3 +73,29 @@ img {
     box-shadow: 0 0 5px rgba(255,255,255,0.05);
     text-align: center;
 }
+
+.btn-red {
+    background-color: #c0392b;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.btn-red:hover {
+    background-color: #e74c3c;
+}
+
+.btn-blue {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.btn-blue:hover {
+    background-color: #3399ff;
+}

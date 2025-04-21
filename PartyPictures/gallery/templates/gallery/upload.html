@@ -1,39 +1,43 @@
 {% load static %}
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Foto machen</title>
     <link rel="stylesheet" href="{% static 'gallery/css/upload.css' %}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
+
 <body>
-<form id="uploadForm" method="post" enctype="multipart/form-data" class="upload-card">
-    {% csrf_token %}
+    <form id="uploadForm" method="post" enctype="multipart/form-data" class="upload-card">
+        {% csrf_token %}
 
-    <div id="messages">
-      {% for msg in messages %}
-          <p>{{ msg }}</p>
-      {% endfor %}
-    </div>
-
-    <div id="cameraIcon" class="camera-icon">📸</div>
-
-    <label class="upload-button" for="fileInput">Foto machen</label>
-    <input id="fileInput" type="file" name="image" accept="image/*" capture="environment">
-
-    <div id="previewContainer">
-        <img id="preview" src="#" alt="Vorschau">
-        <div id="actionButtons">
-            <button id="submitBtn" type="submit">Bild hochladen</button>
-            <button type="button" id="cancelBtn">Abbrechen</button>
+        <div id="messages">
+            {% for msg in messages %}
+            <p>{{ msg }}</p>
+            {% endfor %}
         </div>
+
+        <div id="cameraIcon" class="camera-icon">📸</div>
+
+        <label class="upload-button" for="fileInput">Foto machen</label>
+        <input id="fileInput" type="file" name="image" accept="image/*" capture="environment">
+
+        <div id="previewContainer">
+            <img id="preview" src="#" alt="Vorschau">
+            <div id="actionButtons">
+                <button id="submitBtn" type="submit">Bild hochladen</button>
+                <button type="button" id="cancelBtn">Abbrechen</button>
+            </div>
+        </div>
+    </form>
+    <!-- Ladeanzeige -->
+    <div id="loadingOverlay">
+        <div class="spinner"></div>
+        <div>Bitte warten…</div>
     </div>
-</form>
-<!-- Ladeanzeige -->
-<div id="loadingOverlay">
-    <div class="spinner"></div>
-    <div>Bitte warten…</div>
-</div>
-<script src="{% static 'gallery/js/upload.js' %}"></script>
+    <script src="{% static 'gallery/js/upload.js' %}"></script>
+    <script src="{% static 'gallery/js/common.js' %}"></script>
 </body>
+
 </html>

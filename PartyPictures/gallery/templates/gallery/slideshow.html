@@ -1,18 +1,18 @@
 {% load static %}
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Slideshow</title>
     <link rel="stylesheet" href="{% static 'gallery/css/slideshow.css' %}">
 </head>
+
 <body>
     {% if images %}
-        <img id="slideshowImage"
-             src="{{ images.0.image.url }}"
-             alt="Slideshow Bild"
-             style="max-width:100%; max-height:100%; object-fit:contain;">
-        
-        <script id="slideshow-data" type="application/json">
+    <img id="slideshowImage" src="{{ images.0.image.url }}" alt="Slideshow Bild"
+        style="max-width:100%; max-height:100%; object-fit:contain;">
+
+    <script id="slideshow-data" type="application/json">
             {
                 "urls": [
                     {% for img in images %}
@@ -24,11 +24,13 @@
             }
         </script>
     {% else %}
-        <p style="color:white;">Keine Bilder vorhanden.</p>
+    <p style="color:white;">Keine Bilder vorhanden.</p>
     {% endif %}
     <script>
         window.slideshowDataUrl = "{% url 'slideshow-data' %}";
     </script>
     <script src="{% static 'gallery/js/slideshow.js' %}"></script>
+    <script src="{% static 'gallery/js/common.js' %}"></script>
 </body>
+
 </html>

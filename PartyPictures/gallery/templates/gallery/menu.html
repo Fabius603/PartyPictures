@@ -1,29 +1,34 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="de">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hauptmenü</title>
     <link rel="stylesheet" href="{% static 'gallery/css/menu.css' %}">
 </head>
+
 <body>
-  <div class="menu-container">
-    <h1>PartyPictures Dashboard</h1>
-    <div class="menu-grid">
-      <a class="menu-card" href="{% url 'upload' %}">
-        <div class="icon">📷</div>
-        <div class="label">Foto machen</div>
-      </a>
-      <a class="menu-card" href="{% url 'slideshow' %}">
-        <div class="icon">🖼️</div>
-        <div class="label">Slideshow</div>
-      </a>
-      <a class="menu-card" href="{% url 'settings' %}">
-        <div class="icon">⚙️</div>
-        <div class="label">Einstellungen</div>
-      </a>
+    <div class="menu-container">
+        <h1>PartyPictures Dashboard</h1>
+        <div class="menu-grid">
+            <a class="menu-card" href="{% url 'upload' %}">
+                <div class="icon">📷</div>
+                <div class="label">Foto machen</div>
+            </a>
+            <a class="menu-card" href="{% url 'slideshow' %}">
+                <div class="icon">🖼️</div>
+                <div class="label">Slideshow</div>
+            </a>
+            <a class="menu-card" href="{% url 'settings' %}">
+                <div class="icon">⚙️</div>
+                <div class="label">Einstellungen</div>
+            </a>
+        </div>
     </div>
-  </div>
+    <script src="{% static 'gallery/js/common.js' %}"></script>
+
 </body>
+
 </html>
