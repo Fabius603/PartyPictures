@@ -1,0 +1,53 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Caches
+*.log
+*.pot
+*.pyc
+*.pyo
+*.mo
+*.db
+
+# Django stuff
+*.sqlite3
+db.sqlite3
+media/
+staticfiles/
+
+# dotenv environment variables
+.env
+*.env
+
+# Virtual environment
+venv/
+.env/
+env/
+ENV/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Node (optional)
+node_modules/
+npm-debug.log
+
+# Test coverage
+htmlcov/
+coverage.xml
+*.cover
+.cache
+.pytest_cache/
+
+# Migrations (optional – nur, wenn du sie bewusst nicht versionierst)
+# **Achtung:** Nur aktivieren, wenn du migrations manuell kontrollierst
+# */migrations/
+# !*/migrations/__init__.py
