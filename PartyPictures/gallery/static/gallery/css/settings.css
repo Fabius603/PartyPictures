@@ -100,18 +100,3 @@ img {
     background-color: #3399ff;
 }
 
-.btn-back {
-    display: inline-block;
-    margin-bottom: 20px;
-    padding: 10px 20px;
-    background-color: #444;
-    color: white;
-    text-decoration: none;
-    border-radius: 8px;
-    font-size: 1em;
-    transition: background-color 0.3s ease;
-}
-
-.btn-back:hover {
-    background-color: #666;
-}
