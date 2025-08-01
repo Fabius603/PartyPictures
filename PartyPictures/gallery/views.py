@@ -8,11 +8,22 @@ import time
 import random
 
 def upload_view(request):
-    config = AppConfig.objects.first() or AppConfig(slideshow_speed=10, upload_cooldown=30)
+    config, created = AppConfig.objects.get_or_create(
+        pk=1, 
+        defaults={
+            'slideshow_speed': 5, 
+            'upload_cooldown': 10, 
+            'upload_enabled': True
+        }
+    )
     cooldown = config.upload_cooldown
     upload_enabled = config.upload_enabled
 
     if request.method == 'POST':
+        if not upload_enabled:
+            messages.error(request, "Upload ist derzeit deaktiviert.")
+            return redirect('upload')
+            
         last_upload = request.session.get("last_upload_ts", 0)
         if time.time() - last_upload < cooldown:
             wait = cooldown - int(time.time() - last_upload)
@@ -23,7 +34,10 @@ def upload_view(request):
         if form.is_valid():
             form.save()
             request.session["last_upload_ts"] = int(time.time())
+            messages.success(request, "Bild erfolgreich hochgeladen!")
             return redirect('upload')  # leitet weiter zur GET-Anfrage
+        else:
+            messages.error(request, "Fehler beim Upload. Bitte versuche es erneut.")
     else:
         form = ImageUploadForm()
 
